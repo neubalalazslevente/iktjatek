@@ -3,6 +3,17 @@ import random
 
 pygame.init()
 
+#functions
+def getBiggestScore():
+    try:
+        with open("./score.txt", "r") as file:
+            content = file.read()
+            return int(content)
+    except FileNotFoundError:
+        print("A fájl nem található.")
+    except IOError:
+        print("Hiba történt a fájl olvasása közben.")
+
 # constants
 white = (0,0,0)
 black = (255, 255, 255)
@@ -19,6 +30,18 @@ enemy_posY = 200
 enemy_size = 50
 spawn = False
 loosemsg_display = False
+
+score = 0
+score_display = True
+
+last_score = 0
+last_score_display = False
+
+biggest_score = getBiggestScore()
+biggest_score_display = True
+
+player_biggest_score = 0
+player_biggest_score_display = False
 
 # setup
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -39,9 +62,21 @@ while running:
     border_bottom = pygame.draw.rect(screen, "white", [0, 350, WIDTH, 5])
     player = pygame.draw.rect(screen, "green", [player_posX, player_posY, 20, 20])
     enemy = pygame.draw.rect(screen, "red", [enemy_posX, enemy_posY, enemy_size, enemy_size])
-    loosemsg = font.render("You Loose!", True, "red")
+    #messages
+    loosemsg = font.render("Vesztettél!", True, "red")
     loosemsg_rect = loosemsg.get_rect()
     loosemsg_rect.center = (WIDTH // 2, HEIGHT // 2)
+
+    score_message = font.render(f"Pontszámod: {str(score)}", True, "white")
+    score_message_rect = score_message.get_rect()
+    score_message_rect.inflate_ip(-20, -20)
+    screen.blit(score_message, score_message_rect)
+
+    biggest_score_message = font.render(f"Legnagyobb pontszám: {str(biggest_score)}", True, "white")
+    biggest_score_rect = biggest_score_message.get_rect()
+    biggest_score_rect.inflate_ip(-1000, -20)
+    screen.blit(biggest_score_message, biggest_score_rect)
+
 
 
     # EVENTS
@@ -60,13 +95,15 @@ while running:
         enemy_posX -= 4
     
     if enemy_posX < -enemy_size:
-        enemy_posY = random.randint(55, 350 - enemy_size)
+        enemy_posY = random.randint(60, 350 - enemy_size)
         enemy_posX = 800
+        score += 1
 
     if (enemy_posX < player_posX + 20 and enemy_posX + enemy_size > player_posX and enemy_posY < player_posY + 20 and enemy_posY + enemy_size > player_posY):
         spawn = False
         loosemsg_display = True
         pygame.event.set_blocked(pygame.KEYDOWN)
+        player_biggest_score = score
 
     if loosemsg_display:
         screen.blit(loosemsg, loosemsg_rect)
@@ -74,3 +111,5 @@ while running:
     pygame.display.flip()
     pygame.display.update()
 pygame.quit()
+
+
