@@ -37,6 +37,9 @@ player_posY = 190
 enemy_posX = 800
 enemy_posY = 200
 enemy_size = 50
+enemy_max_size = 110
+enemy_size_multipier = 1.1
+enemy_velocity_multipier = 1.03
 enemy_velocity = 4
 spawn = False
 
@@ -75,8 +78,8 @@ while running:
     #messages
     startmsg = font.render("A játék indításához használd a SPACE gombot!", True, "white")
     startmsg_rect = startmsg.get_rect()
-    startmsg_rect.center(WIDTH, HEIGHT)
-    if spawn != True:
+    startmsg_rect.center = (WIDTH // 2, HEIGHT // 2)
+    if startmsg_display == True:
         screen.blit(startmsg, startmsg_rect)
 
     loosemsg = font.render("Vesztettél!", True, "red")
@@ -108,15 +111,16 @@ while running:
 
     # sebesség
     if spawn == True:
+        startmsg_display = False
         enemy_posX -= enemy_velocity
     
     # enemy újra teleportál
     if enemy_posX < -enemy_size:
         enemy_posX = 800
         score += 1
-        enemy_velocity = enemy_velocity * 1.04
-        if enemy_size < 100:
-            enemy_size = enemy_size * 1.1
+        enemy_velocity = enemy_velocity * enemy_velocity_multipier
+        if enemy_size < enemy_max_size:
+            enemy_size = enemy_size * enemy_size_multipier
         enemy_posY = random.randint(60, 350 - int(enemy_size))
 
     # player halál
@@ -135,5 +139,3 @@ while running:
     pygame.display.flip()
     pygame.display.update()
 pygame.quit()
-
-
