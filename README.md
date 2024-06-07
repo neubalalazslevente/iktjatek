@@ -2,7 +2,9 @@
 Befejezve: 2024.06.07
 Projekt: SyncNetworikng
 
-<b>FONTOS!!!
+<b>
+FONTOS!!!
+</b>
 <br>
 A játék használatához szükséges programok:
 <br>
